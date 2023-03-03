@@ -22,6 +22,18 @@ namespace CatCards.Controllers
             cardDao = _cardDao;
         }
 
+        [HttpGet]
+        public ActionResult<List<CatCard>> GetAllCards()
+        {
+            List<CatCard> cards = cardDao.GetAllCards();
+
+            if (cards.Count == 0)
+            {
+                return NoContent();
+            }
+            return cards;
+
+        }
 
         [HttpGet("{id}")]
         public ActionResult<CatCard> GetCard(int id)
@@ -38,7 +50,7 @@ namespace CatCards.Controllers
         }
 
         [HttpGet("random")]
-        public ActionResult <CatCard> GetRandomCard()
+        public ActionResult<CatCard> GetRandomCard()
         {
             CatPic randomPic = catPicService.GetPic();
 
@@ -49,7 +61,7 @@ namespace CatCards.Controllers
             randomCard.CatFact = randomFact.Text;
             randomCard.ImgUrl = randomPic.File;
 
-            
+
             if (randomCard != null)
             {
                 return Ok(randomCard);
@@ -61,12 +73,33 @@ namespace CatCards.Controllers
         }
 
         [HttpPost()]
-
         public ActionResult<CatCard> SavedCatCard(CatCard cardToSave)
         {
-
             return cardDao.SaveCard(cardToSave);
         }
 
+        [HttpPut("{id}")]
+        public ActionResult UpdateCard(CatCard card)
+        {
+            bool updateSuccessful = cardDao.UpdateCard(card);
+
+            if (updateSuccessful)
+            {
+                return NoContent();
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteCard(int id)
+        {
+            bool updateSuccessful = cardDao.RemoveCard(id);
+
+            if (updateSuccessful)
+            {
+                return NoContent();
+            }
+            return StatusCode(500);
+        }
     }
 }
