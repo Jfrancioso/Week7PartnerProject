@@ -1,5 +1,6 @@
 ﻿using CatCards.Models;
 using RestSharp;
+using System.Net.Http;
 
 namespace CatCards.Services
 {
@@ -10,7 +11,15 @@ namespace CatCards.Services
 
         public CatFact GetFact()
         {
-            throw new System.NotImplementedException();
+            RestRequest request = new RestRequest(API_URL);
+            IRestResponse<CatFact> response = client.Get<CatFact>(request);
+
+            if (!response.IsSuccessful)
+            {
+                throw new HttpRequestException($"There was an error in the call to the server");
+            }
+            return response.Data;
         }
     }
 }
+

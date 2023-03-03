@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CatCards.DAO;
 using CatCards.Models;
 using CatCards.Services;
@@ -34,6 +35,37 @@ namespace CatCards.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet("random")]
+        public ActionResult <CatCard> GetRandomCard()
+        {
+            CatPic randomPic = catPicService.GetPic();
+
+            CatFact randomFact = catFactService.GetFact();
+
+            CatCard randomCard = new CatCard();
+
+            randomCard.CatFact = randomFact.Text;
+            randomCard.ImgUrl = randomPic.File;
+
+            
+            if (randomCard != null)
+            {
+                return Ok(randomCard);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost()]
+
+        public ActionResult<CatCard> SavedCatCard(CatCard cardToSave)
+        {
+
+            return cardDao.SaveCard(cardToSave);
         }
 
     }
